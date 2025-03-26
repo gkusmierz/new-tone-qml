@@ -1,200 +1,358 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
+// main.qml
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
 
 ApplicationWindow {
     id: mainWindow
     width: 800
     height: 600
     visible: true
-    title: "Radio Automation" // or whatever title you want
+    title: "Radio Playout Mockup"
+    color: "#33373C" // Main dark background
 
-    background: Rectangle {
-        color: "#333333" // Dark Gray Background
-    }
+    // Define the ListModel for the playlist data
+    ListModel {
+        id: playlistModel
+
+        ListElement {
+            itemType: "onAir"
+            deviceId: 2
+            artist: "CATHERINE WHEEL"
+            title: "Judy staring at the sun"
+            details: "LP: Adam & Eve / 1995 / Mercury"
+            countdownTime: ":02⁷"
+            durationInfo: ":16 / 3:49 / F"
+            leftIndicatorColor: "#FF4500" // Red
+            itemBackgroundColor: "#B0B0B0" // Light Gray background for non-current ON AIR
+            iconSymbol: "◄"
+            showProgress: false
+            progressValue: 0.0
+            startTime: "" // Not applicable for OnAir in this specific way
+        }
+        ListElement {
+            itemType: "onAir"
+            deviceId: 1
+            artist: "WEIRD AL YANKOVIC"
+            title: "Another one rides the bus"
+            countdownTime: ":04⁴"
+            durationInfo: ":19 / 3:31 / C"
+            leftIndicatorColor: "#FF4500" // Red
+            itemBackgroundColor: "#66CC33" // Green background for current item
+            iconSymbol: "◄"
+            showProgress: true // Show progress visualization
+            progressValue: 0.8 // Example progress ~80%
+            startTime: ""
+        }
+        ListElement {
+            itemType: "queued"
+            startTime: "23:54:41"
+            artist: "CHURCH, THE"
+            title: "Under the milky way tonight"
+            countdownTime: "3:47⁸"
+            durationInfo: ":11 / 3:48 / D"
+            iconSymbol: "◄"
+            // Default colors and progress from PlaylistItem.qml will be used
+            leftIndicatorColor: "#44474C"
+            itemBackgroundColor: "#44474C"
+            showProgress: false
+            progressValue: 0.0
+            deviceId: 0
+            details: ""
+        }
+        ListElement {
+            itemType: "queued"
+            startTime: "23:57:23"
+            artist: "PHOENIX"
+            title: "Too young (radio cut)"
+            countdownTime: "3:19²"
+            durationInfo: ":18 / 3:19 / F"
+            iconSymbol: "◄"
+            leftIndicatorColor: "#44474C"
+            itemBackgroundColor: "#44474C"
+            showProgress: false
+            progressValue: 0.0
+            deviceId: 0
+            details: ""
+        }
+        ListElement {
+            itemType: "sync"
+            startTime: "00:00:00"
+            artist: "SYGNAŁ CZASU"
+            title: "Tu RR... jest północ"
+            countdownTime: ":07¹"
+            durationInfo: ":07 / C"
+            leftIndicatorColor: "#007ACC" // Blue for SYNC START
+            itemBackgroundColor: "#44474C"
+            iconSymbol: "⚡"
+            showProgress: false
+            progressValue: 0.0
+            deviceId: 0
+            details: ""
+        }
+        ListElement {
+            itemType: "vtr"
+            startTime: "00:00:07"
+            artist: "VTR"
+            title: "Sobota 11 sie 00:00"
+            countdownTime: ":11⁶"
+            durationInfo: ":11 / C"
+            leftIndicatorColor: "#9370DB" // Purple for VTR
+            itemBackgroundColor: "#44474C"
+            iconSymbol: "○"
+            showProgress: false
+            progressValue: 0.0
+            deviceId: 0
+            details: ""
+        }
+        ListElement {
+            itemType: "link"
+            startTime: "00:00:07"
+            artist: "ROGER WATERS"
+            title: "Radio waves"
+            countdownTime: "4:49⁶"
+            durationInfo: ":31 / 4:49 / F"
+            leftIndicatorColor: "#9370DB" // Purple for LINK
+            itemBackgroundColor: "#44474C"
+            iconSymbol: "◄"
+            showProgress: false
+            progressValue: 0.0
+            deviceId: 0
+            details: ""
+        }
+    } // End ListModel
+
 
     ColumnLayout {
-        id: mainLayout
         anchors.fill: parent
-        spacing: 0 // Reduced spacing
+        spacing: 0
 
-        // Top Bar
+        // --- 1. Top Area (Identical to previous version) ---
         Rectangle {
-            id: topBar
+            id: topArea
+            color: "#44474C"
             Layout.fillWidth: true
             Layout.preferredHeight: 60
-            color: "#222222" // Darker Gray Background
+
+            RowLayout {
+                anchors.fill: parent
+                anchors.leftMargin: 10
+                anchors.rightMargin: 10
+
+                // 1.1 Left Panel (Time, Date, Mode)
+                RowLayout {
+                    Layout.preferredWidth: 200
+                    spacing: 15
+                    ColumnLayout { /* ... Time/Date ... */
+                        spacing: 2
+                        Layout.alignment: Qt.AlignVCenter
+                        Label {
+                            id: timeLabel
+                            text: "23:49:01"
+                            color: "white"
+                            font.pixelSize: 28
+                            font.bold: true
+                        }
+                        Label {
+                            id: dateLabel
+                            text: "Poniedziałek 11 pazdziernika 2007"
+                            color: "#C0C0C0"
+                            font.pixelSize: 11
+                        }
+                    }
+                    Button { /* ... Auto/Manual Button ... */
+                        id: modeButton
+                        text: "Auto"
+                        highlighted: true
+                        checkable: true
+                        checked: true
+                        Layout.preferredWidth: 70
+                        Layout.preferredHeight: 40
+                        Layout.alignment: Qt.AlignVCenter
+                        background: Rectangle {
+                            color: modeButton.checked ? "#FF4500" : "#33AA33"
+                            radius: 3
+                        }
+                        contentItem: Label {
+                            text: modeButton.text
+                            color: "white"
+                            font.bold: true
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                        onCheckedChanged: {
+                            text = checked ? "Auto" : "Manual"
+                        }
+                    }
+                }
+
+                // Spacer
+                Item { Layout.fillWidth: true }
+
+                // 1.2 Right Panel (Emission Blocks)
+                GridLayout { /* ... Emission Blocks ... */
+                    rows: 2
+                    columns: 3
+                    columnSpacing: 10
+                    rowSpacing: 2
+                    Layout.alignment: Qt.AlignVCenter
+                    Label {
+                        text: "22:00:00"
+                        color: "#C0C0C0"
+                        font.pixelSize: 11
+                        Layout.alignment: Qt.AlignRight
+                    }
+                    Label {
+                        text: "ON AIR"
+                        color: "#66CC33"
+                        font.bold: true
+                        font.pixelSize: 11
+                    }
+                    Label {
+                        text: "Nocny maraton muzyczny (-00:01:01)"
+                        color: "white"
+                        font.pixelSize: 11
+                    }
+                    Label {
+                        text: "06:00:00"
+                        color: "#C0C0C0"
+                        font.pixelSize: 11
+                        Layout.alignment: Qt.AlignRight
+                    }
+                    Label {
+                        text: "-06:10:59"
+                        color: "#C0C0C0"
+                        font.pixelSize: 11
+                    }
+                    Label {
+                        text: "Informacje + prognoza pogody + reklama"
+                        color: "white"
+                        font.pixelSize: 11
+                    }
+                }
+            }
+        } // End Top Area
+
+        // --- 2. Main Area (Playlist using ListView) ---
+        ListView {
+            id: playlistView
+            model: playlistModel // Assign the model here
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            spacing: 1 // Thin line between items
+            clip: true // Ensure items don't draw outside the view
+
+            // The delegate renders each item from the model
+            delegate: PlaylistItem {
+                // Bind PlaylistItem properties to model properties
+                // The 'model' object provides access to ListElement properties
+                itemType: model.itemType
+                deviceId: model.deviceId
+                startTime: model.startTime
+                artist: model.artist
+                title: model.title
+                details: model.details
+                countdownTime: model.countdownTime
+                durationInfo: model.durationInfo
+                leftIndicatorColor: model.leftIndicatorColor
+                itemBackgroundColor: model.itemBackgroundColor // Bind this too
+                iconSymbol: model.iconSymbol
+                showProgress: model.showProgress
+                progressValue: model.progressValue
+
+                // Ensure the delegate takes the full width of the ListView
+                width: playlistView.width
+            }
+
+            // Optional: Add scrollbar if needed (usually appears automatically)
+            ScrollIndicator.vertical: ScrollIndicator { }
+
+        } // End Playlist ListView
+
+        // --- 3. Control Buttons Area (Identical to previous version) ---
+        Rectangle {
+            id: bottomArea
+            color: "#33373C"
+            Layout.fillWidth: true
+            Layout.preferredHeight: 50
+            Layout.margins: 5
+
             RowLayout {
                 anchors.fill: parent
                 spacing: 10
 
-                //Clock
-                Text {
-                    id: timeDisplay
-                    text: "23:49:01" //Example
-                    color: "white"
-                    font.pixelSize: 30
-                    Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
-                }
-
-                Text {
-                    id: dateDisplay
-                    text: "Poniedzialek 11 pazdziernika 2007" //Example
-                    color: "white"
-                    font.pixelSize: 12
-                    Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
-                }
-
-                Rectangle {
-                    id: autoModeIndicator
-                    Layout.preferredWidth: 50
-                    Layout.preferredHeight: 30
-                    color: "orangered" // Or whatever color you need
-                    Text {
-                        anchors.centerIn: parent
-                        text: "Auto"
-                        color: "white"
+                // 3.1 Left Buttons
+                RowLayout { /* ... ADD/DEL/MOVE/COPY/CUE buttons ... */
+                    spacing: 5
+                    Repeater {
+                        model: [
+                            "ADD",
+                            "DEL",
+                            "MOVE",
+                            "COPY",
+                            "CUE"]
+                        delegate: Button {
+                            /* ... Button Style ... */
+                            text: modelData
+                            implicitWidth: 60
+                            implicitHeight: 35
+                            background: Rectangle{
+                                color:"#55595C"
+                                radius: 3
+                                border.color: "#666A6D"
+                                border.width: 1
+                            }
+                            contentItem: Label {
+                                text: parent.text
+                                color:"#D0D0D0"
+                                font.pixelSize:11
+                                font.bold:true
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+                        }
                     }
                 }
-                Rectangle {
+
+                // Spacer
+                Item {
                     Layout.fillWidth: true
-                } // Spacer to push to right
-                ColumnLayout {
-                   Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
-                   Text {
-                       id: onAirTime
-                       text: "ON AIR"
-                       color: "green"
-                   }
-                   Text {
-                       id: timeInfo
-                       text: "-06:10:59"
-                       color: "white"
-                   }
-
                 }
-                ColumnLayout {
-                   Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
-                    Text {
-                        id: nightMarathon
-                        text: "Nocny maraton muzyczny (-00:01:01)"
-                        color: "white"
+
+                // 3.2 Right Buttons
+                RowLayout { /* ... LOG/CARTS/LIBRARY/SHOW buttons ... */
+                    spacing: 5
+                    Repeater {
+                        model: [
+                            "LOG",
+                            "CARTS",
+                            "LIBRARY",
+                            "SHOW"
+                        ]
+                        delegate: Button {
+                            /* ... Button Style ... */
+                            text: modelData
+                            implicitWidth: 70
+                            implicitHeight: 35
+                            background: Rectangle{
+                                color:"#55595C"
+                                radius: 3
+                                border.color: "#666A6D"
+                                border.width: 1
+                            }
+                            contentItem: Label {
+                                text: parent.text
+                                color:"#D0D0D0"
+                                font.pixelSize:11
+                                font.bold:true
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+                        }
                     }
-                    Text {
-                        id: info
-                        text: "Informacje + prognoza pogody + reklama"
-                        color: "white"
-                    }
                 }
             }
-        }
+        } // End Bottom Area
 
-        // Playlist Area
-        ScrollView {
-            id: playlistScrollView
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            clip: true
-
-            ColumnLayout {
-                id: playlistLayout
-                width: playlistScrollView.width
-                spacing: 0
-
-                // Example Playlist Item
-                PlaylistItem {
-                    onAir: true
-                    priority: 2
-                    title: "CATHERINE WHEEL"
-                    artist: "Judy staring at the sun"
-                    startTime: ""
-                    duration: ":027"
-                }
-                PlaylistItem {
-                    onAir: true
-                    priority: 1
-                    title: "WEIRD AL YANKOVIC"
-                    artist: "Another one rides the bus"
-                    startTime: ""
-                    duration: ":044"
-                }
-                PlaylistItem {
-                    onAir: false
-                    priority: 0
-                    title: "CHURCH, THE"
-                    artist: "Under the milky way tonight"
-                    startTime: "23:54:41"
-                    duration: "3:478"
-                }
-                // Add more PlaylistItem components here...
-            }
-        }
-
-        // Bottom Buttons
-        RowLayout {
-            id: bottomButtonsLayout
-            Layout.fillWidth: true
-            Layout.preferredHeight: 20
-            spacing: 10
-            /*Rectangle {
-                Layout.fillHeight: true
-                Layout.fillWidth: true
-            }*/
-            Button {
-                text: "ADD"
-                onClicked: { /* Logic to add a new item */ }
-                Layout.alignment: Qt.AlignHCenter
-            }
-            Button {
-                text: "DEL"
-                onClicked: { /* Logic to delete the selected item */ }
-                Layout.alignment: Qt.AlignHCenter
-            }
-            Button {
-                text: "MOVE"
-                onClicked: { /* Logic to move the selected item */ }
-                Layout.alignment: Qt.AlignHCenter
-            }
-             Button {
-                text: "COPY"
-                onClicked: { /* Logic to copy the selected item */ }
-                Layout.alignment: Qt.AlignHCenter
-            }
-             Button {
-                text: "CUE"
-                onClicked: { /* Logic to queue the selected item */ }
-                Layout.alignment: Qt.AlignHCenter
-            }
-
-            Item {
-                Layout.fillHeight: true
-                Layout.fillWidth: true
-            }
-
-           Button {
-                text: "LOG"
-                onClicked: { /* Logic to log the  item */ }
-                Layout.alignment: Qt.AlignHCenter
-            }
-            Button {
-                text: "CARTS"
-                onClicked: { /* Logic to handle cart operation */ }
-                Layout.alignment: Qt.AlignHCenter
-            }
-            Button {
-                text: "LIBRARY"
-                onClicked: { /* Logic to open library */ }
-                Layout.alignment: Qt.AlignHCenter
-            }
-             Button {
-                text: "SHOW"
-                onClicked: { /* Logic to show the info */ }
-                Layout.alignment: Qt.AlignHCenter
-            }
-            /*Rectangle {
-                Layout.fillHeight: true
-                Layout.fillWidth: true
-            }*/
-        }
-    }
+    } // End Main ColumnLayout
 }

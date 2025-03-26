@@ -1,0 +1,31 @@
+In the attached image there is mockup of radio automation playout.
+
+1.	In the top area we have 
+1.1.	information panel on the left showing:
+1.1.1.	current time
+1.1.2.	current date
+1.1.3.	AUTO button (red color), when pressed label is changed to MANUAL and color to green, and so on
+1.2.	Right panel shows the information about two emission blocks:
+1.2.1.	Current emission block
+1.2.2.	Next emission block
+2.	Main area showing playlist items
+2.1.	First two items represents active playbacks 
+2.2.	Next five items shows playlist items in the queue
+2.3.	On the right each item has two labels:
+2.3.1.	Emission time (counting down to zero)
+2.3.2.	Intro time / emission time, ending method (C, D, F, etc)
+2.4.	On the left there is rectangular Rectangle component depending on the mode:
+2.4.1.	ON AIR – has red background, label ON AIR and id of playing device (1 or 2)
+2.4.2.	Otherwise it can have different background color or the same as place in the middle (see 2.5 for more info) and two labels – 1st START info, 2nd duration of item
+2.5.	Middle section shows 3 labels and have two backgrounds imitating progress of playback. Labels:
+2.5.1.	Icon differentiating playlist item type (music, jingle, other (VTR))
+2.5.2.	Artist
+2.5.3.	Title
+3.	Control buttons area 
+3.1.	Left: ADD, DEL, MOVE, COPY & CUE
+3.2.	Right: LOG, CARTS, LIBRARY & SHOW
+
+I want to use Qt6 & QML (imports without version) to generate mockup of qml window. Please help me
+
+Addition infos:
+Avoid qrc:/main.qml:285:21: ListElement: cannot use script for property value
