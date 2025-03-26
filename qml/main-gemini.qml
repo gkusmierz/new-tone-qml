@@ -26,8 +26,8 @@ ApplicationWindow {
             leftIndicatorColor: "#FF4500" // Red
             itemBackgroundColor: "#B0B0B0" // Light Gray background for non-current ON AIR
             iconSymbol: "◄"
-            showProgress: false
-            progressValue: 0.0
+            showProgress: true
+            progressValue: 0.25
             startTime: "" // Not applicable for OnAir in this specific way
         }
         ListElement {

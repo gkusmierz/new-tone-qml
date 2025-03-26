@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
 
     // Load the main qml file
-    const QUrl url("qrc:/main.qml");
+    const QUrl url("qrc:/main-gemini.qml");
     engine.load(url);
 
     return app.exec();
